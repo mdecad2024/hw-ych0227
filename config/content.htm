@@ -226,6 +226,67 @@ openByGet();
 <option>low</option>
 <option>high</option>
 </select></div>
+<script type="text/javascript">
+var viewers = [];
+
+function getOptions(){
+    var mc = document.getElementById("mdlClr").value;
+    var bc1 = document.getElementById("bckClr1").value;
+    var bc2 = document.getElementById("bckClr2").value;
+    var ren = document.getElementById("render").value;
+    var def = document.getElementById("defini").value;
+    return {ModelColor: mc, BackgroundColor1: bc1, BackgroundColor2: bc2, RenderMode: ren, Definition: def};
+}
+
+function readSTLfile(opt, canvasId){
+    var canvas = document.getElementById(canvasId);
+    var viewer = new JSC3D.Viewer(canvas);
+    viewer.setParameter('SceneUrl', opt.SceneUrl);
+    viewer.setParameter('InitRotationX', 0);
+    viewer.setParameter('InitRotationY', 0);
+    viewer.setParameter('InitRotationZ', 0);
+    viewer.setParameter('ModelColor', opt.ModelColor);
+    viewer.setParameter('BackgroundColor1', opt.BackgroundColor1);
+    viewer.setParameter('BackgroundColor2', opt.BackgroundColor2);
+    viewer.setParameter('RenderMode', opt.RenderMode);
+    viewer.setParameter('Definition', opt.Definition);
+    viewer.init();
+    viewer.update();
+    viewers.push(viewer); // 保存 viewer 實例
+}
+
+function changeOption(strOpt,strValue){
+    console.log("change " + strOpt + " to " + strValue);
+    viewers.forEach(viewer => {
+        viewer.setParameter(strOpt, strValue);
+        viewer.init();
+        viewer.update();
+    });
+}
+
+function openByUrl(){
+    var url = document.getElementById("url").value;
+    var opt = getOptions();
+    opt.SceneUrl = url;
+    // 可以添加更多的 STL URL
+    readSTLfile(opt, 'cv1'); // 為每個 canvas 調用
+    readSTLfile(opt, 'cv2'); // 第二個 canvas
+}
+
+function openByGet(){
+    var urls = [
+        "https://s104.cycu.org/~41223240/Plongeur Renvoi bille_sldprt-41223240.stl",
+        "https://s104.cycu.org/~41223240/Platine renvoie bille_sldprt-41223240.stl"
+    ];
+    var opt = getOptions();
+    urls.forEach((url, index) => {
+        opt.SceneUrl = url;
+        readSTLfile(opt, 'cv' + (index + 1)); // 動態生成 canvas ID
+    });
+}
+
+openByGet();
+</script>
 <p></p>
 <p>與 HW2 內容相近的組立件題目, 隨堂進行考試.</p>
 <p>零件與組立件考試題目以 Solvespace 繪圖操作過程影片如下:</p>
@@ -233,8 +294,7 @@ openByGet();
 <p style="padding-left: 30px;">所完成的零件與組立件檔案下載</p>
 <p>零件與組立件考試題目以 NX 繪圖操作過程影片如下:</p>
 <p style="padding-left: 30px;">請將操作影片嵌入 ......</p>
-<p style="padding-left: 30px;">所完成的零件與組立件檔案下載</p>
-<h1>HW3</h1>
+<p style="padding-left: 30px;">所完成的零件與組立件檔案下載</p><h1>HW3</h1>
 <p></p>
 <p>Homework 3 (20%):</p>
 <p style="padding-left: 30px;">建立 <a href="https://mde.tw/cad2024/content/BonW.html">Balance on Wheels</a> 控制系統設計模擬場景</p>
